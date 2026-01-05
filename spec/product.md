@@ -12,10 +12,11 @@
 - 2.2 New grads lack of professional experiences.
 - 2.3 People who have just changed careers.
 - 2.4 Age between 20 to 40.
+- 2.5 People who already have a job but want a better position.
 
 ## 3. Core hypothesis
 
-- 3.1 Users are willing to pay for resume imporvement.
+- 3.1 Users are willing to pay for resume improvement.
 - 3.2 Users are willing to pay for job seeking suggestions.
 - 3.3 Users are willing to pay for cover letter generation.
 - 3.4 The strongest motivation is uploading from users of their existing resume.
