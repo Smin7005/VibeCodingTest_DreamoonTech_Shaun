@@ -2,14 +2,14 @@ import { createClient } from '@supabase/supabase-js';
 
 // Supabase client for client-side operations
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'placeholder-key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabasePublishableKey);
 
-// Supabase admin client for server-side operations (with service role key)
+// Supabase admin client for server-side operations (with secret key)
 export const supabaseAdmin = createClient(
   supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseAnonKey,
+  process.env.SUPABASE_SECRET_KEY || supabasePublishableKey,
   {
     auth: {
       autoRefreshToken: false,
