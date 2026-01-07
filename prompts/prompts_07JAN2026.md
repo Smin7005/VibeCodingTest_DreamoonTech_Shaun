@@ -133,9 +133,7 @@
       1. (Sometimes .env.local changes need a restart)
       2. Supabase keys - let's verify they're real:
 
-      - Your SUPABASE_SERVICE_ROLE_KEY looks suspiciously
-
-      short (***REDACTED_SECRET_KEY***)
+      - Your SUPABASE_SERVICE_ROLE_KEY looks suspiciously short
 
       - Real service role keys are usually much longer
       - Check Supabase Dashboard → Settings → API → service_role key 3. Check if user_profiles table exists: - Go to Supabase Dashboard → Table Editor - Verify user_profiles table exists with columns: clerk_user_id, email, name, user_type, profile_completion
@@ -161,8 +159,8 @@
 
         Before we proceed, I notice your Supabase keys look suspiciously short:
 
-        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=***REDACTED_PUBLISHABLE_KEY***
-        SUPABASE_SECRET_KEY=***REDACTED_SECRET_KEY***
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxx
+        SUPABASE_SECRET_KEY=sb_secret_xxxxxxxxxxxxxxxxxxx
 
         Real Supabase keys are usually much longer (150+
         characters). These look truncated.
