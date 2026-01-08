@@ -27,6 +27,13 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
+
+# security - private files
+prompts/*_PRIVATE.md
+*.secret
+*.key
+secrets.txt
 
 # vercel
 .vercel
