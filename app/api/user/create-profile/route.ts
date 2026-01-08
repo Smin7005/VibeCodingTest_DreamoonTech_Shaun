@@ -104,6 +104,34 @@ export async function POST(req: NextRequest) {
         name: data.name,
         user_type: data.user_type,
       });
+
+      // Initialize onboarding progress for guest user (4 steps)
+      const guestSteps = [
+        { step_number: 1, step_name: 'sign-up', completed: true }, // Sign-up just completed
+        { step_number: 2, step_name: 'basic-information', completed: false },
+        { step_number: 3, step_name: 'resume-upload', completed: false },
+        { step_number: 4, step_name: 'analysis-results', completed: false },
+      ];
+
+      const { error: progressError } = await supabaseAdmin
+        .from('onboarding_progress')
+        .insert(
+          guestSteps.map(step => ({
+            user_id: data.id,
+            step_number: step.step_number,
+            step_name: step.step_name,
+            completed: step.completed,
+            completed_at: step.completed ? new Date().toISOString() : null,
+          }))
+        );
+
+      if (progressError) {
+        console.error('⚠️ Warning: Failed to initialize onboarding progress:', progressError);
+        // Don't fail the webhook - user can still use the app
+      } else {
+        console.log('✅ Onboarding progress initialized');
+      }
+
       return NextResponse.json({ success: true, data });
     } catch (err) {
       console.error('❌ Exception in user creation:', err);

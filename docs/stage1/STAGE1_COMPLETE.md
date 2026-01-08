@@ -7,6 +7,7 @@ Stage 1 has been successfully implemented. All authentication and user managemen
 ## What Was Built
 
 ### 1. Project Foundation
+
 - ✅ Next.js 14 with App Router
 - ✅ TypeScript configuration
 - ✅ Tailwind CSS styling
@@ -14,6 +15,7 @@ Stage 1 has been successfully implemented. All authentication and user managemen
 - ✅ Environment variable setup
 
 ### 2. Authentication System (Clerk)
+
 - ✅ ClerkProvider integration in root layout
 - ✅ Sign-up page with email + password
 - ✅ Sign-up with Google OAuth
@@ -24,18 +26,21 @@ Stage 1 has been successfully implemented. All authentication and user managemen
 - ✅ Session management
 
 ### 3. Database Integration (Supabase)
+
 - ✅ Supabase client setup
 - ✅ TypeScript types for all database tables
 - ✅ User profile creation webhook
 - ✅ Database schema defined (ready to run in Supabase)
 
 ### 4. Route Protection
+
 - ✅ Middleware for route protection
 - ✅ Protected routes: `/dashboard/*`, `/onboarding/*`, `/subscription/*`
 - ✅ Public routes: `/`, `/sign-in`, `/sign-up`, `/pricing`, `/terms`, `/privacy`
 - ✅ Automatic redirect to sign-in for unauthenticated users
 
 ### 5. Pages Created
+
 - ✅ Landing page with hero section and features
 - ✅ Sign-up page (Clerk component)
 - ✅ Sign-in page (Clerk component)
@@ -45,6 +50,7 @@ Stage 1 has been successfully implemented. All authentication and user managemen
 - ✅ Privacy Policy page
 
 ### 6. API Routes
+
 - ✅ `/api/user/create-profile` - Webhook handler for Clerk user creation
   - Creates user_profile record in Supabase
   - Stores clerk_user_id, email, name
@@ -52,6 +58,7 @@ Stage 1 has been successfully implemented. All authentication and user managemen
   - Handles webhook signature verification
 
 ### 7. Library Files
+
 - ✅ `lib/supabase.ts` - Supabase client configuration
   - Client for client-side operations
   - Admin client for server-side operations
@@ -98,7 +105,7 @@ VibeCodingTest/
 ├── package.json
 ├── postcss.config.js
 ├── README.md
-├── SETUP.md
+├── testStage1.md.md
 ├── STAGE1_COMPLETE.md (this file)
 ├── tailwind.config.ts
 └── tsconfig.json
@@ -107,6 +114,7 @@ VibeCodingTest/
 ## Dependencies Installed
 
 ### Core Dependencies
+
 - `next` (14.2.35) - React framework
 - `react` (18.3.0) - UI library
 - `react-dom` (18.3.0) - React DOM rendering
@@ -121,6 +129,7 @@ VibeCodingTest/
 - `recharts` - Charts (for future stages)
 
 ### Dev Dependencies
+
 - `typescript` - Type checking
 - `tailwindcss` - CSS framework
 - `eslint` - Code linting
@@ -131,7 +140,7 @@ VibeCodingTest/
 
 ### Manual Testing Required
 
-To complete Stage 1 testing, follow the checklist in `SETUP.md`:
+To complete Stage 1 testing, follow the checklist in `testStage1.md`:
 
 1. [ ] Sign-up with email + password works
 2. [ ] Email verification code sent and validated
@@ -156,7 +165,7 @@ Before testing, you must configure:
 2. **Supabase Account** - Create project, run database schema, get API keys
 3. **Environment Variables** - Update `.env.local` with real keys
 
-See `SETUP.md` for detailed setup instructions.
+See `testStage1.md.md` for detailed setup instructions.
 
 ## Known Limitations
 
@@ -183,6 +192,7 @@ All Stage 1 success criteria have been implemented:
 **Stage 2: Onboarding Flow**
 
 Objectives:
+
 - Multi-step onboarding forms
 - Work experience collection
 - Resume upload functionality
@@ -222,7 +232,7 @@ See SETUP.md for configuration instructions.
 
 ## Resources
 
-- **Setup Guide**: `SETUP.md` - Complete configuration and testing instructions
+- **Setup Guide**: `testStage1.md` - Complete configuration and testing instructions
 - **Implementation Spec**: `spec/implementation.md` - Detailed requirements
 - **Claude Guide**: `CLAUDE.md` - Architecture and development patterns
 - **README**: `README.md` - Project overview
@@ -230,4 +240,4 @@ See SETUP.md for configuration instructions.
 ---
 
 **Status**: ✅ READY FOR TESTING
-**Next Action**: Configure Clerk and Supabase, then run tests from `SETUP.md`
+**Next Action**: Configure Clerk and Supabase, then run tests from `testStage1.md`

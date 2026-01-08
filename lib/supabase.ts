@@ -64,7 +64,7 @@ export interface Resume {
   file_path: string;
   file_name: string;
   file_size: number;
-  version_label?: string;
+  version_label?: string | null;
   is_current: boolean;
   uploaded_at: string;
 }
