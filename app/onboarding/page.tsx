@@ -255,7 +255,7 @@ export default function OnboardingPage() {
                 Onboarding Complete! 🎉
               </h2>
               <p className="text-gray-600 mb-6">
-                You've successfully completed all onboarding steps.
+                You&apos;ve successfully completed all onboarding steps.
               </p>
               <button
                 onClick={() => router.push('/dashboard')}

@@ -100,7 +100,7 @@ export default function AnalysisResults({ resumeId, onContinue, onBack }: Analys
       <CardHeader>
         <CardTitle>Resume Analysis Complete</CardTitle>
         <p className="text-sm text-gray-600 mt-2">
-          We've analyzed your resume and extracted key information. Review the results below.
+          We&apos;ve analyzed your resume and extracted key information. Review the results below.
         </p>
         <Alert variant="info" className="mt-4">
           <strong>Note:</strong> Full AI-powered analysis with career advice will be available in the
