@@ -143,7 +143,7 @@ No Access  Limited   Full Access
 - **Career Advice**: Basic improvement suggestions based on resume analysis
 - **Subscription Status**: Shows "Free Plan" with "Upgrade" button
 - **Statistics Block**: Displays count of skills and experiences
-- **Upload Quota Indicator**: Shows "X/4 uploads remaining this month"
+- **Upload Quota Indicator**: Shows "X/5 uploads remaining this month"
 
 **Actions Available:**
 
@@ -157,7 +157,7 @@ No Access  Limited   Full Access
 **Restrictions:**
 
 - Cannot store multiple resume versions (latest upload replaces previous)
-- Limited to 4 uploads per month (quota resets on 1st of each month)
+- Limited to 5 uploads per month (quota resets on 1st of each month)
 - Basic career advice only (detailed roadmap requires Premium)
 - Cannot generate cover letters (Premium feature)
 
@@ -272,7 +272,7 @@ Claude API performs the following:
 
 ### Step 9: Update Upload Quota (Free Users Only)
 - Increment upload counter for current month
-- Update quota display: "X/4 uploads remaining this month"
+- Update quota display: "X/5 uploads remaining this month"
 
 ## 6. Purchase Flow
 
@@ -421,14 +421,14 @@ User can perform:
 - Increment upload counter (+1)
 - Replace previous resume in storage (single storage mode)
 - Run analysis and display results
-- Update quota indicator: "X/4 uploads remaining this month"
+- Update quota indicator: "X/5 uploads remaining this month"
 
 ### Step 3: If Count >= 4 (Quota Exceeded)
 
 **Block Upload:**
 - Display modal/alert:
   - **Header**: "Monthly Upload Limit Reached"
-  - **Message**: "You've used all 4 uploads for this month (4/4)"
+  - **Message**: "You've used all 5 uploads for this month (5/5)"
   - **Quota Reset Date**: "Quota resets on [1st of Next Month]"
   - **Upgrade CTA**: "Upgrade to Premium" button
   - **Benefits List**:
@@ -457,7 +457,7 @@ User can perform:
 
 ### 10.2 Quota Exceeded (Free Users)
 
-**Scenario:** Free user has reached 4 uploads for current month
+**Scenario:** Free user has reached 5 uploads for current month
 
 **Flow:**
 1. Display quota exceeded modal (see Step 3 of Upload Quota Management Flow)

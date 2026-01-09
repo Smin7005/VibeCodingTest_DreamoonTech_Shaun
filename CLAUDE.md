@@ -82,7 +82,7 @@ The project follows a **strict staged implementation approach** detailed in `spe
 The platform operates on a three-tier user system:
 
 - **Guest**: Unauthenticated, can only view landing/pricing pages
-- **Free User**: Authenticated, 4 resume uploads/month, single resume storage, basic career advice
+- **Free User**: Authenticated, 5 resume uploads/month, single resume storage, basic career advice
 - **Member**: Premium subscription, unlimited uploads, multiple resume versions, detailed career roadmap
 
 **Key Distinction:** Free users get single resume storage (new upload replaces old). Members get version management (all uploads stored with custom labels).
@@ -105,7 +105,7 @@ The platform operates on a three-tier user system:
 
 **Upload Quota System:**
 - Track uploads per user per month in `upload_quota` table
-- Free users: 4/month max, enforced before upload
+- Free users: 5/month max, enforced before upload
 - Members: unlimited
 - Failed uploads don't count toward quota
 - Quota resets on 1st of each month at 00:00 UTC
@@ -158,7 +158,7 @@ components/
 │   ├── OnboardingGuide.tsx     # Stepper with clickable steps
 │   ├── ResumeInformation.tsx   # Skills tags, experiences list
 │   ├── CareerAdvice.tsx        # AI-generated advice + discrepancy warnings
-│   ├── UploadQuotaIndicator.tsx  # "X/4 uploads remaining" (Free only)
+│   ├── UploadQuotaIndicator.tsx  # "X/5 uploads remaining" (Free only)
 │   ├── ResumeVersionSelector.tsx # Version dropdown (Members only)
 │   ├── SubscriptionStatus.tsx  # Plan details + manage button
 │   └── EditWorkExperience.tsx  # Modal to correct date discrepancies
@@ -193,7 +193,7 @@ middleware.ts                    # Clerk route protection
 
 **Resume Upload:**
 - PDF only, max 10MB, min 1KB
-- Free users: 4/month quota, single storage (new replaces old)
+- Free users: 5/month quota, single storage (new replaces old)
 - Members: unlimited, version storage (all kept)
 - Failed uploads don't count toward quota
 
@@ -313,7 +313,7 @@ Each stage has a detailed testing checklist in `spec/implementation.md`. Complet
 - **Testing is non-negotiable:** Complete testing checklist after each stage before moving forward.
 - **User type transitions are critical:** Guest → Free (after onboarding completion), Free → Member (after subscription purchase), Member → Free (after subscription cancellation/expiration).
 - **Date validation is a core feature:** Always compare manual work experience dates with resume-extracted dates and flag discrepancies.
-- **Quota enforcement is strict:** Free users MUST be blocked after 4 uploads/month. Failed uploads don't count.
+- **Quota enforcement is strict:** Free users MUST be blocked after 5 uploads/month. Failed uploads don't count.
 
 ## Documentation References
 

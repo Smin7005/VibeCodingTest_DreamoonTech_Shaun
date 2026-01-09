@@ -28,7 +28,7 @@
   - PDF format validation working
   - File size validation working (reject > 10MB)
   - Preview window displaying correctly
-  - Upload quota enforced for Free Users (4/month)
+  - Upload quota enforced for Free Users (5/month)
 - ✅ Claude API integration successfully analyzing resumes
   - Grammar and spelling correction working
   - Basic information extraction (>90% accuracy)
@@ -461,7 +461,7 @@
   - Skills count accurate
   - Experience count accurate
   - Updates after new analysis
-- ✅ Upload quota indicator for Free Users (e.g., "3/4 uploads remaining this month")
+- ✅ Upload quota indicator for Free Users (e.g., "4/5 uploads remaining this month")
   - Quota fetched from database
   - Displayed accurately
   - Progress bar reflects usage

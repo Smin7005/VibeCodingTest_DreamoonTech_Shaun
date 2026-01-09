@@ -29,14 +29,14 @@
 - ❌ Cannot access detailed career roadmap
 
 **Upload Restrictions:**
-- Maximum 4 resume uploads per calendar month
+- Maximum 5 resume uploads per calendar month
 - Quota resets on 1st day of each month at 00:00 UTC
 - Only latest resume is stored (new upload replaces previous)
 - Limited to 4 analyses per month (tied to upload quota)
 
 **Display Features:**
 - See upgrade prompts for Premium features
-- View upload quota indicator: "X/4 uploads remaining this month"
+- View upload quota indicator: "X/5 uploads remaining this month"
 - Access basic improvement suggestions
 - View profile completion percentage
 
@@ -144,7 +144,7 @@
 ### 3.2 Upload Quota Rules
 
 **Free User Quota:**
-- Maximum 4 uploads per calendar month
+- Maximum 5 uploads per calendar month
 - Quota resets on 1st day of each month at 00:00 UTC
 - Quota counter tracked per user in database
 - If quota exceeded: Block upload and display upgrade prompt
@@ -345,14 +345,14 @@
 **Free Plan:**
 - **Price:** $0 (no payment required)
 - **Features:**
-  - 4 resume uploads per month
+  - 5 resume uploads per month
   - Single resume storage (latest version only)
   - Basic analysis and career advice
   - Dashboard access
   - Email support (48-hour response time)
 - **Restrictions:**
   - Cannot store multiple resume versions
-  - Limited upload quota (4/month)
+  - Limited upload quota (5/month)
   - No detailed career roadmap
   - No cover letter generation (future feature)
 
@@ -440,7 +440,7 @@
 - No active payment
 - User reverted to Free User status
 - Access to Premium features removed
-- Upload quota applies (4/month)
+- Upload quota applies (5/month)
 - Stored resume versions remain but cannot create new versions
 
 **Trial:**
@@ -521,19 +521,19 @@
 ### 6.3 Upload Quota Indicator (Free Users Only)
 
 **Display Format:**
-- Text: "X/4 uploads remaining this month"
+- Text: "X/5 uploads remaining this month"
 - Progress bar showing usage
 - Example:
-  - "3/4 uploads remaining" → 75% filled (green)
-  - "1/4 uploads remaining" → 25% filled (orange)
-  - "0/4 uploads remaining" → 0% filled (red)
+  - "4/5 uploads remaining" → 75% filled (green)
+  - "1/5 uploads remaining" → 25% filled (orange)
+  - "0/5 uploads remaining" → 0% filled (red)
 
 **Quota Reset Display:**
 - Show reset date: "Quota resets on [Month 1st]"
 - Countdown: "Resets in X days"
 
 **When Quota Exhausted:**
-- Display: "0/4 uploads remaining this month"
+- Display: "0/5 uploads remaining this month"
 - Show "Upgrade to Premium for unlimited uploads" message
 - Disable upload button
 - Provide "Upgrade" CTA button

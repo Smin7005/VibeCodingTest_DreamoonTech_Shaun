@@ -61,6 +61,18 @@ export default function OnboardingPage() {
             setSteps(data.steps);
             setCurrentStep(data.current_step);
             setUserType(data.user_type);
+
+            // If user is at step 4 or later but has no resumeId, fetch current resume
+            if (data.current_step >= 4) {
+              const resumeResponse = await fetch('/api/resume/current');
+              if (resumeResponse.ok) {
+                const resumeData = await resumeResponse.json();
+                if (resumeData.success && resumeData.resume) {
+                  setResumeId(resumeData.resume.id);
+                  console.log('Fetched existing resume:', resumeData.resume.id);
+                }
+              }
+            }
           }
 
           // Pre-fill data if user is returning
@@ -238,6 +250,14 @@ export default function OnboardingPage() {
           <AnalysisResults
             resumeId={resumeId}
             onContinue={handleAnalysisComplete}
+            onBack={handleBack}
+          />
+        )}
+
+        {/* Fallback: If at step 4 but no resume found, show upload again */}
+        {currentStep === 4 && !resumeId && (
+          <ResumeUpload
+            onUploadSuccess={handleResumeUploadSuccess}
             onBack={handleBack}
           />
         )}

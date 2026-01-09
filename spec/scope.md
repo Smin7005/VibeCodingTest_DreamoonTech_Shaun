@@ -77,7 +77,7 @@
 
 - 1.3.1.1 **Guest users**: No upload access (must sign up first)
 - 1.3.1.2 **Free users**:
-  - Maximum 4 resume uploads per calendar month
+  - Maximum 5 resume uploads per calendar month
   - Quota resets on 1st day of each month at 00:00 UTC
   - Single resume storage (latest upload replaces previous)
   - Failed uploads do NOT count toward quota
@@ -166,7 +166,7 @@
 - 1.4.3.4 Integrating all the informations, and create the result of analysis by the 'React card' or similar component.
 - 1.4.3.5 For **Free users**:
   - Provide "Upload New Resume" button (enabled if quota available)
-  - Display upload quota indicator (e.g., "3/4 uploads remaining this month")
+  - Display upload quota indicator (e.g., "4/5 uploads remaining this month")
   - After submission, do the analysis again, and replace the previous result (single storage)
 - 1.4.3.6 For **Members**:
 
@@ -193,7 +193,7 @@
 - 1.4.3.8 Upload quota indicator (Free users only)
 
   - Display current month's upload quota usage
-  - Format: "X/4 uploads remaining this month"
+  - Format: "X/5 uploads remaining this month"
   - Include progress bar showing quota usage
   - Color coding:
     - 3-4 remaining: Green
@@ -208,7 +208,7 @@
 #### 1.4.4 Subscription states
 
 - 1.4.4.1 If user is free user, platform shows 'Free Plan' with features list and a button to upgrade user's plan must be set alongside.
-  - Features displayed: "4 uploads/month", "Basic career advice", "Single resume storage"
+  - Features displayed: "5 uploads/month", "Basic career advice", "Single resume storage"
 - 1.4.4.2 If user is member, platform shows current plan information, including:
   - Plan level: "Premium Monthly" or "Premium Yearly"
   - Bill cycle: Monthly or Yearly

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { checkUploadQuota, incrementUploadQuota } from '@/lib/quota';
 
 // Server-side file validation
 function validateFile(file: File): { valid: boolean; error?: string } {
@@ -50,7 +51,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
     }
 
-    // 5. If free user, mark previous resume as not current (single storage rule)
+    // 5. Check quota for free users before upload
+    if (userProfile.user_type === 'free') {
+      const quotaStatus = await checkUploadQuota(userProfile.id, 'free');
+      if (!quotaStatus.canUpload) {
+        console.log(`❌ Upload quota exceeded for user ${userProfile.id}. Used: ${quotaStatus.used}/${quotaStatus.limit}`);
+        return NextResponse.json(
+          {
+            error: 'Upload quota exceeded. Upgrade to Premium for unlimited uploads.',
+            quota: {
+              remaining: quotaStatus.remaining,
+              used: quotaStatus.used,
+              limit: quotaStatus.limit,
+              resetDate: quotaStatus.resetDate,
+            },
+          },
+          { status: 403 }
+        );
+      }
+    }
+
+    // 6. If free user, mark previous resume as not current (single storage rule)
     if (userProfile.user_type === 'free') {
       await supabaseAdmin
         .from('resumes')
@@ -98,7 +119,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to save resume record' }, { status: 500 });
     }
 
-    // 9. Return success with resume_id
+    // 9. Increment quota for free users after successful upload
+    if (userProfile.user_type === 'free') {
+      const quotaResult = await incrementUploadQuota(userProfile.id);
+      console.log(`✅ Quota incremented for user ${userProfile.id}. New count: ${quotaResult.newCount}`);
+    }
+
+    // 10. Return success with resume_id
     return NextResponse.json(
       {
         success: true,

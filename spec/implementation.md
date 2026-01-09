@@ -639,7 +639,7 @@ Integrate Claude API for AI-powered resume analysis, implement upload quota syst
 
 **Features:**
 - Track uploads per user per month
-- Enforce 4 uploads/month for Free users
+- Enforce 5 uploads/month for Free users
 - No limit for Members
 - Quota resets on 1st of each month
 - Failed uploads don't count toward quota
@@ -682,7 +682,7 @@ After completing Stage 3, verify:
 - [ ] Date discrepancies detected correctly
 - [ ] Career advice generated (different for Free vs Member)
 - [ ] Upload quota tracked correctly
-- [ ] Free users blocked after 4 uploads
+- [ ] Free users blocked after 5 uploads
 - [ ] Members have unlimited uploads
 - [ ] Free user: new upload replaces previous
 - [ ] Member: new upload creates new version
@@ -796,7 +796,7 @@ Build comprehensive dashboard displaying all user data, resume information, care
 - `components/dashboard/UploadQuotaIndicator.tsx`
 
 **Display:**
-- "X/4 uploads remaining this month"
+- "X/5 uploads remaining this month"
 - Progress bar with color coding
 - Quota reset date
 - If exhausted: "Upgrade to Premium" CTA
@@ -820,7 +820,7 @@ Build comprehensive dashboard displaying all user data, resume information, care
 
 **Free User Display:**
 - "Free Plan"
-- Features list (4 uploads/month, basic advice, single storage)
+- Features list (5 uploads/month, basic advice, single storage)
 - "Upgrade to Premium" button
 
 **Member Display:**
