@@ -160,7 +160,7 @@ export default function EditWorkExperience({ isOpen, onClose, experiences, onSav
   };
 
   // Handle field changes
-  const handleChange = (index: number, field: keyof EditableExperience, value: string | number | boolean) => {
+  const handleChange = (index: number, field: keyof EditableExperience, value: string | number | boolean | undefined) => {
     setEditedExperiences((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
