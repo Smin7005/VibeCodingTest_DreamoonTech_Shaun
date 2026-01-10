@@ -138,7 +138,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     periodEnd
   );
 
-  console.log('Subscription record result:', subscriptionRecord);
+  console.log('Subscription record result:', JSON.stringify(subscriptionRecord));
+
+  if (!subscriptionRecord) {
+    console.error('FAILED to create subscription record - check if subscriptions table exists and has correct schema');
+  }
 
   if (subscriptionRecord) {
     // Update user type to member

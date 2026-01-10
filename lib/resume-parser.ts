@@ -7,11 +7,11 @@ interface PdfParseResult {
   info: Record<string, unknown>;
 }
 
-// Use require for pdf-parse v1.1.1 (CommonJS module)
-// This avoids ESM compatibility issues with Next.js webpack
+// Parse PDF using pdf-parse library
+// The package is externalized in next.config.js for serverless compatibility
 async function parsePdf(buffer: Buffer): Promise<PdfParseResult> {
-  // Dynamic require to avoid webpack bundling issues
-  const pdfParse = eval('require')('pdf-parse');
+  // pdf-parse is a CommonJS module externalized for Vercel serverless
+  const pdfParse = require('pdf-parse');
   return pdfParse(buffer);
 }
 

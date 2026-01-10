@@ -909,6 +909,7 @@ read prompts_10JAN2026.md from line 570 to end."
   - STRIPE_WEBHOOK_SECRET
 
 **User:** "read prompts/logs_result.json "
+
 **Assistant Reply:**
 
 - Found the issue! The logs show:
@@ -930,3 +931,72 @@ read prompts_10JAN2026.md from line 570 to end."
   - Fixes "Invalid Date" error in webhook handler
 
   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+
+**User:** "I did the purchase test again, and I checked the log on both Vercel and Stripe, success 200, but the subscriptions and subscription_history tables are still empty."
+
+**Assistant Reply:**
+
+- Found the issue! The subscriptions table requires a UNIQUE constraint on user_id for the upsert to work, but the schema doesn't have one.
+
+          Quick Fix - Do this in Supabase:
+
+          1. Check if subscriptions table exists:
+              Go to Supabase → Table Editor → Look for subscriptions table
+
+          2. If it doesn't exist, run this SQL in Supabase SQL Editor:
+
+          -- Create subscriptions table
+          CREATE TABLE IF NOT EXISTS subscriptions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE UNIQUE,
+          stripe_customer_id TEXT UNIQUE NOT NULL,
+          stripe_subscription_id TEXT UNIQUE,
+          plan_type TEXT NOT NULL,
+          status TEXT NOT NULL,
+          current_period_start TIMESTAMP WITH TIME ZONE,
+          current_period_end TIMESTAMP WITH TIME ZONE,
+          cancel_at_period_end BOOLEAN DEFAULT FALSE,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+          );
+
+          -- Create subscription_history table
+          CREATE TABLE IF NOT EXISTS subscription_history (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
+          subscription_id UUID REFERENCES subscriptions(id) ON DELETE CASCADE,
+          event_type TEXT NOT NULL,
+          old_status TEXT,
+          new_status TEXT,
+          old_plan TEXT,
+          new_plan TEXT,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+          );
+
+          -- Create index
+          CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
+          CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe_customer ON subscriptions(stripe_customer_id);
+
+          3. If table exists but missing UNIQUE on user_id:
+              ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_user_id_unique UNIQUE (user_id);
+
+          ***
+
+  Does the subscriptions table exist in your Supabase?
+
+**User:** "no now we have new error, I cannot upload and analyse resume on Vercel, but I have test it on localhost and it was all good. read prompts\log_result_422.json "
+
+**Assistant Reply:**
+
+- The issue is that pdf-parse isn't being bundled correctly for Vercel serverless functions. I'll fix this by updating the Next.js config and the import method.
+  Done. I fixed the PDF parsing issue by:
+
+  1. Updated lib/resume-parser.ts - Removed the eval('require') hack and used standard require('pdf-parse')
+
+  1. Deploy the code changes to Vercel:
+     git add . && git commit -m "Fix pdf-parse module bundling for Vercel serverless" && git push
+
+  After fix are applied:
+
+  - Resume upload/analysis will work on
+    Vercel
