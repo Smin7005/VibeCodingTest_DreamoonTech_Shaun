@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getQuotaResetDate } from '@/lib/dashboard';
 
 interface UploadQuotaIndicatorProps {
@@ -12,7 +12,6 @@ interface UploadQuotaIndicatorProps {
 }
 
 export default function UploadQuotaIndicator({ used, limit, userType, onUpload }: UploadQuotaIndicatorProps) {
-  const router = useRouter();
 
   // Members have unlimited uploads
   if (userType === 'member') {
@@ -97,12 +96,12 @@ export default function UploadQuotaIndicator({ used, limit, userType, onUpload }
           <p className="text-sm text-gray-600 mb-3">
             Upgrade to Premium for unlimited uploads and multiple resume versions.
           </p>
-          <button
-            onClick={() => router.push('/pricing')}
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          <Link
+            href="/pricing"
+            className="block w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-center"
           >
             Upgrade to Premium
-          </button>
+          </Link>
         </div>
       )}
     </div>

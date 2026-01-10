@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Subscription } from '@/lib/supabase';
 
 interface SubscriptionStatusProps {
@@ -10,7 +10,6 @@ interface SubscriptionStatusProps {
 }
 
 export default function SubscriptionStatus({ subscription, userType }: SubscriptionStatusProps) {
-  const router = useRouter();
 
   // Free user display
   if (userType !== 'member' || !subscription) {
@@ -55,15 +54,15 @@ export default function SubscriptionStatus({ subscription, userType }: Subscript
             <li>• Detailed career roadmap (10+ tips)</li>
             <li>• Priority support</li>
           </ul>
-          <p className="text-xs text-blue-600">Starting at $19.99/month</p>
+          <p className="text-xs text-blue-600">Starting at A$20/month</p>
         </div>
 
-        <button
-          onClick={() => router.push('/pricing')}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        <Link
+          href="/pricing"
+          className="block w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-center"
         >
           Upgrade to Premium
-        </button>
+        </Link>
       </div>
     );
   }
@@ -127,13 +126,13 @@ export default function SubscriptionStatus({ subscription, userType }: Subscript
         {subscription.plan_type === 'premium_monthly' && (
           <div className="flex justify-between items-center py-2 border-b border-gray-100">
             <span className="text-gray-600">Price</span>
-            <span className="font-medium text-gray-900">$19.99/month</span>
+            <span className="font-medium text-gray-900">A$20/month</span>
           </div>
         )}
         {subscription.plan_type === 'premium_yearly' && (
           <div className="flex justify-between items-center py-2 border-b border-gray-100">
             <span className="text-gray-600">Price</span>
-            <span className="font-medium text-gray-900">$199/year</span>
+            <span className="font-medium text-gray-900">A$200/year</span>
           </div>
         )}
       </div>
@@ -187,13 +186,13 @@ export default function SubscriptionStatus({ subscription, userType }: Subscript
         </ul>
       </div>
 
-      {/* Manage subscription button */}
-      <button
-        onClick={() => router.push('/api/stripe/portal')}
-        className="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+      {/* Manage subscription button - uses GET redirect to Stripe Portal */}
+      <a
+        href="/api/stripe/portal"
+        className="block w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-center"
       >
         Manage Subscription
-      </button>
+      </a>
     </div>
   );
 }
