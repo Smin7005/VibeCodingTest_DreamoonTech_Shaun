@@ -99,14 +99,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   // Retrieve the subscription details from Stripe
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
 
   // Get plan type from price ID
-  const priceId = subscription.items.data[0]?.price.id;
+  const priceId = stripeSubscription.items.data[0]?.price.id;
   const planType = getPlanTypeFromPriceId(priceId) || 'premium_monthly';
 
-  const periodStart = new Date(subscription.current_period_start * 1000);
-  const periodEnd = new Date(subscription.current_period_end * 1000);
+  // Access period dates from the raw subscription object
+  const subData = stripeSubscription as unknown as { current_period_start: number; current_period_end: number };
+  const periodStart = new Date(subData.current_period_start * 1000);
+  const periodEnd = new Date(subData.current_period_end * 1000);
 
   console.log('Creating subscription record with:', {
     userId,
@@ -185,7 +187,9 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const priceId = subscription.items.data[0]?.price.id;
   const newPlanType = getPlanTypeFromPriceId(priceId) || 'premium_monthly';
 
-  const periodEnd = new Date(subscription.current_period_end * 1000);
+  // Access period end from raw subscription object
+  const subData = subscription as unknown as { current_period_end: number };
+  const periodEnd = new Date(subData.current_period_end * 1000);
 
   // Update subscription status
   await updateSubscriptionStatus(
@@ -267,8 +271,10 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   console.log('Processing invoice.payment_failed');
 
-  const customerId = invoice.customer as string;
-  const subscriptionId = invoice.subscription as string;
+  // Access properties from raw invoice object due to SDK type issues
+  const invoiceData = invoice as unknown as { customer: string; subscription: string | null };
+  const customerId = invoiceData.customer;
+  const subscriptionId = invoiceData.subscription;
 
   if (!subscriptionId) return;
 

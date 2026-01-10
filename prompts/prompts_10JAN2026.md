@@ -451,3 +451,17 @@ No detailed explanations. Do not explain unless there is a breaking change. Keep
   The webhook handler will then receive events and update Supabase.
 
 **User:** "I think I should directly do the test on Vercel, because I set the webhooks secret key from the Stripe Dashboard, not Stripe CLI. If there are no tests can be done locally, I should commit and push first, then redeploy at Vercel. "
+
+**Assistant Reply:**
+
+- Stage 5: Stripe Subscription Integration
+
+  - Add lib/stripe.ts with Stripe client and price configuration
+  - Add lib/subscription.ts with subscription CRUD helpers
+  - Add /api/stripe/checkout for creating Checkout sessions
+  - Add /api/stripe/webhook for handling Stripe events
+  - Add /api/stripe/portal for Customer Portal redirect
+  - Add /subscription/success and /subscription/cancelled pages
+  - Update pricing page with checkout buttons (AUD pricing)
+  - Update SubscriptionStatus with portal link
+  - Update UploadQuotaIndicator with Link component

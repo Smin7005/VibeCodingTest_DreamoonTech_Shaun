@@ -5,7 +5,8 @@
       "mcp__context7__query-docs",
       "Bash(npm uninstall:*)",
       "Bash(npm install:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
