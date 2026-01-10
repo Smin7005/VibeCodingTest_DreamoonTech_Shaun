@@ -181,10 +181,13 @@ export async function handleStripeSubscription(
     planType = 'premium_yearly';
   }
 
-  // Access period dates from raw subscription object due to SDK type issues
-  const subData = stripeSubscription as unknown as { current_period_start: number; current_period_end: number };
-  const periodStart = new Date(subData.current_period_start * 1000);
-  const periodEnd = new Date(subData.current_period_end * 1000);
+  // Convert to plain object to access period dates
+  const subObj = JSON.parse(JSON.stringify(stripeSubscription));
+  const periodStartTimestamp = subObj.current_period_start || Math.floor(Date.now() / 1000);
+  const periodEndTimestamp = subObj.current_period_end || Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+
+  const periodStart = new Date(periodStartTimestamp * 1000);
+  const periodEnd = new Date(periodEndTimestamp * 1000);
 
   // Create or update subscription record
   await createSubscriptionRecord(

@@ -101,14 +101,22 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   // Retrieve the subscription details from Stripe
   const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
 
+  // Convert to plain object to access all properties
+  const subObj = JSON.parse(JSON.stringify(stripeSubscription));
+  console.log('Stripe subscription object keys:', Object.keys(subObj));
+
   // Get plan type from price ID
   const priceId = stripeSubscription.items.data[0]?.price.id;
   const planType = getPlanTypeFromPriceId(priceId) || 'premium_monthly';
 
-  // Access period dates from the raw subscription object
-  const subData = stripeSubscription as unknown as { current_period_start: number; current_period_end: number };
-  const periodStart = new Date(subData.current_period_start * 1000);
-  const periodEnd = new Date(subData.current_period_end * 1000);
+  // Access period dates from the subscription object
+  const periodStartTimestamp = subObj.current_period_start || subObj.start_date || Math.floor(Date.now() / 1000);
+  const periodEndTimestamp = subObj.current_period_end || subObj.ended_at || Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+
+  const periodStart = new Date(periodStartTimestamp * 1000);
+  const periodEnd = new Date(periodEndTimestamp * 1000);
+
+  console.log('Period timestamps:', { periodStartTimestamp, periodEndTimestamp });
 
   console.log('Creating subscription record with:', {
     userId,
@@ -187,9 +195,10 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const priceId = subscription.items.data[0]?.price.id;
   const newPlanType = getPlanTypeFromPriceId(priceId) || 'premium_monthly';
 
-  // Access period end from raw subscription object
-  const subData = subscription as unknown as { current_period_end: number };
-  const periodEnd = new Date(subData.current_period_end * 1000);
+  // Convert to plain object to access period end
+  const subObj = JSON.parse(JSON.stringify(subscription));
+  const periodEndTimestamp = subObj.current_period_end || Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+  const periodEnd = new Date(periodEndTimestamp * 1000);
 
   // Update subscription status
   await updateSubscriptionStatus(

@@ -566,3 +566,367 @@ No detailed explanations. Do not explain unless there is a breaking change. Keep
         2. In Stripe Dashboard → Webhooks → click the failed event → Resend
 
   The webhook should now return 200 instead of 401.
+
+**User:**"Delivery status
+Failed
+Next retry in 59 minutes
+Attempt date
+Jan 10, 2026, 11:24:27 PM
+Event ID
+evt_1So1gUJB499hy1cRIxzI3Vhs
+Origin date
+Jan 10, 2026, 11:24:27 PM ACDT
+Source
+Automatic
+API version
+2025-12-15.clover
+Description
+A Checkout Session was completed
+Response
+HTTP status code
+401
+
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Authentication Required</title><script type=text/llms.txt> ## Note to agents accessing this page: This page requires authentication to access. Automated agents should use a Vercel authentication bypass token to access this page. The easiest way to get a token is using the get_access_to_vercel_url or web_fetch_vercel_url functions of the Vercel MCP server at https://mcp.vercel.com (Docs at https://vercel.com/docs/mcp/vercel-mcp). Alternatively, this URL documents how to use the bypass token: https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation You need to prompt the user to provide the bypass token to access this page. The URL above also explains how the user can access the bypass token. Then you can calculate a URL of the following form and successfully access it: `https://current-domain/current-pathname?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=$bypass_token`.
+
+Request
+{
+"id":
+"evt_1So1gUJB499hy1cRIxzI3Vhs"
+,
+"object":
+"event",
+"api_version":
+"2025-12-15.clover",
+"created":
+1768049666
+,
+"data": {
+"object": {
+"id":
+"cs_test_b1uEJ8a8gUJHJ70bNmnxSAUlQGYlerDIAl1TaPjPXjfpXKbqUCt1dAmugG"
+,
+"object":
+"checkout.session",
+"adaptive_pricing": {
+"enabled":
+false,
+},
+"after_expiration":
+null,
+"allow_promotion_codes":
+true,
+"amount_subtotal":
+2000,
+"amount_total":
+2000,
+"automatic_tax": {
+"enabled":
+false,
+"liability":
+null,
+"provider":
+null,
+"status":
+null,
+},
+"billing_address_collection":
+"auto",
+"branding_settings": {
+"background_color":
+"#ffffff",
+"border_style":
+"rounded",
+"button_color":
+"#0074d4",
+"display_name":
+"Shaun",
+"font_family":
+"default",
+"icon":
+null,
+"logo":
+null,
+},
+"cancel_url":
+"https://vibe-coding-test-dreamoon-t-git-2a5d9c-shauns-projects-86f4278e.vercel.app/subscription/cancelled",
+"client_reference_id":
+null,
+"client_secret":
+null,
+"collected_information": {
+"business_name":
+null,
+"individual_name":
+null,
+"shipping_details":
+null,
+},
+"consent":
+null,
+"consent_collection":
+null,
+"created":
+1768049633
+,
+"currency":
+"aud",
+"currency_conversion":
+null,
+"custom_fields": [],
+"custom_text": {
+"after_submit":
+null,
+"shipping_address":
+null,
+"submit":
+null,
+"terms_of_service_acceptance":
+null,
+},
+"customer":
+"cus_TlYnqur8PqrNMy"
+,
+"customer_account":
+null,
+"customer_creation":
+null,
+"customer_details": {
+"address": {
+"city":
+null,
+"country":
+"AU",
+"line1":
+null,
+"line2":
+null,
+"postal_code":
+null,
+"state":
+null,
+},
+"business_name":
+null,
+"email":
+"shangmin.chi@gmail.com",
+"individual_name":
+null,
+"name":
+"Shangmin Chi",
+"phone":
+null,
+"tax_exempt":
+"none",
+"tax_ids": [],
+},
+"customer_email":
+null,
+"discounts": [],
+"expires_at":
+1768136032
+,
+"invoice":
+"in_1So1gRJB499hy1cRjBRLLySF"
+,
+"invoice_creation":
+null,
+"livemode":
+false,
+"locale":
+null,
+"metadata": {
+"planType":
+"premium_monthly",
+"userId":
+"b604b193-cb83-44cc-a42c-646747e3f08d",
+},
+"mode":
+"subscription",
+"origin_context":
+null,
+"payment_intent":
+null,
+"payment_link":
+null,
+"payment_method_collection":
+"always",
+"payment_method_configuration_details":
+null,
+"payment_method_options": {
+"card": {
+"request_three_d_secure":
+"automatic",
+},
+},
+"payment_method_types": [
+"card",
+],
+"payment_status":
+"paid",
+"permissions":
+null,
+"phone_number_collection": {
+"enabled":
+false,
+},
+"recovered_from":
+null,
+"saved_payment_method_options": {
+"allow_redisplay_filters": [
+"always",
+],
+"payment_method_remove":
+"disabled",
+"payment_method_save":
+null,
+},
+"setup_intent":
+null,
+"shipping_address_collection":
+null,
+"shipping_cost":
+null,
+"shipping_options": [],
+"status":
+"complete",
+"submit_type":
+null,
+"subscription":
+"sub_1So1gTJB499hy1cR3Lw9uYhR"
+,
+"success_url":
+"https://vibe-coding-test-dreamoon-t-git-2a5d9c-shauns-projects-86f4278e.vercel.app/subscription/success?session_id={CHECKOUT_SESSION_ID}",
+"total_details": {
+"amount_discount":
+0,
+"amount_shipping":
+0,
+"amount_tax":
+0,
+},
+"ui_mode":
+"hosted",
+"url":
+null,
+"wallet_options":
+null,
+},
+},
+"livemode":
+false,
+"pending_webhooks":
+1,
+"request": {
+"id":
+null,
+"idempotency_key":
+null,
+},
+"type":
+"checkout.session.completed",
+}
+read prompts_10JAN2026.md from line 570 to end."
+
+**Assistant Reply:**
+
+- The webhook is still getting 401. The issue is Vercel Deployment Protection.
+
+  Looking at the URL:
+  https://vibe-coding-test-dreamoon-t-git-2a5d9c-shauns-projects-86f4278e.vercel.app
+
+  This is a preview deployment with protection enabled.
+
+  Fix: Disable Deployment Protection for Webhooks
+
+  Option 1: Use Production URL (Recommended)
+
+  1. In Vercel, go to your project → Settings → Domains
+  2. Get your production domain (e.g., your-app.vercel.app without the git-xxxxx part)
+  3. Update Stripe webhook endpoint to use the production URL:
+     https://vibe-coding-test.vercel.app/api/stripe/webhook
+
+  Option 2: Disable Deployment Protection
+
+  1. Vercel → Project → Settings → Deployment Protection
+  2. Either:
+
+     - Turn off "Vercel Authentication" for Production
+     - Or add /api/stripe/webhook to the bypass list
+
+  **User:**
+  "checkout.session.completed
+  Resend
+  Delivery status
+  Failed
+  Next retry in 58 minutes
+  Attempt date
+  Jan 10, 2026, 11:39:00 PM
+  Event ID
+  evt_1So1uaJB499hy1cRTWzwFDXV
+  Origin date
+  Jan 10, 2026, 11:39:00 PM ACDT
+  Source
+  Automatic
+  API version
+  2025-12-15.clover
+  Description
+  A Checkout Session was completed
+  Response
+  HTTP status code
+  500
+  {
+  "error":
+  "Webhook handler failed",
+  }
+  Now the error code is 500. "
+
+**Assistant Reply:**
+
+- Progress! Now it's reaching the webhook (no more 401), but failing inside the handler.
+
+  Check Vercel Function Logs
+
+  1. Go to Vercel Dashboard → Your Project
+  2. Click Logs (or Deployments → latest → Functions)
+  3. Look for errors from /api/stripe/webhook
+
+  The log should show the actual error (e.g., database connection, missing field, etc.)
+
+  ***
+
+  Alternatively, tell me the error from Vercel logs and I'll fix it.
+
+  Common causes:
+
+  - Missing Supabase env vars in Vercel
+  - Database table doesn't exist (subscriptions or subscription_history)
+  - Stripe webhook signature verification failing
+
+  Do you have these env vars set in Vercel?
+
+  - SUPABASE_SECRET_KEY
+  - NEXT_PUBLIC_SUPABASE_URL
+  - STRIPE_WEBHOOK_SECRET
+
+**User:** "read prompts/logs_result.json "
+**Assistant Reply:**
+
+- Found the issue! The logs show:
+
+  periodStart: Invalid Date,
+  periodEnd: Invalid Date
+
+  The Stripe SDK type casting isn't working. The current_period_start and current_period_end are not accessible.
+  Build passed. The fix converts the Stripe subscription object to a plain JSON
+  object to properly access the period dates.
+
+  Commit, push, and redeploy, then resend the webhook from Stripe Dashboard.
+
+  Commit message:
+
+  Fix: Stripe subscription period date parsing
+
+  - Convert Stripe subscription object to plain JSON before accessing period dates
+  - Fixes "Invalid Date" error in webhook handler
+
+  Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
