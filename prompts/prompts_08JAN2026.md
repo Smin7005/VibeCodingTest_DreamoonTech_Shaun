@@ -1,4 +1,4 @@
-# Conversation Summary - January 8, 2026
+# Conversation - January 8, 2026
 
 ---
 

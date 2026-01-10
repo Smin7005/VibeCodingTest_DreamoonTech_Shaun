@@ -4,6 +4,9 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { checkUploadQuota } from '@/lib/quota';
 import { calculateProfileCompletion } from '@/lib/dashboard';
 
+// Force dynamic rendering - this route uses auth headers
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const { userId: clerkUserId } = await auth();

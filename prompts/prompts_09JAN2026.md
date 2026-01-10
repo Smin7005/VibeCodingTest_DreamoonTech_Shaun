@@ -1,4 +1,4 @@
-# Conversation Summary - January 9, 2026
+# Conversation - January 9, 2026
 
 ---
 
@@ -688,8 +688,7 @@ Output:
 - Code changes with inline comments where necessary
 - A short conclusion (≤10 bullet points)
 
-No detailed explanations. Do not explain unless there is a breaking change.
-Keep responses concise. "
+No detailed explanations. Do not explain unless there is a breaking change. Keep responses concise. "
 
 **Assistant Reply:**
 
