@@ -1026,24 +1026,71 @@ read prompts_10JAN2026.md from line 570 to end."
             git add . && git commit -m "Fix resume upload and dashboard query bugs" && git push
 
         2. After deployment, you may need to fix existing data in Supabase. Run this SQL in Supabase SQL Editor to ensure only the most recent resume is marked as current for each user:
-            -- Fix: Set all resumes to is_current=false except the most recent one per user
-            WITH latest_resumes AS (
-            SELECT DISTINCT ON (user_id) id, user_id
+                -- Fix: Set all resumes to is_current=false except the most recent one per user
+                WITH latest_resumes AS (
+                SELECT DISTINCT ON (user_id) id, user_id
+                FROM resumes
+                ORDER BY user_id, uploaded_at DESC
+                )
+                UPDATE resumes
+                SET is_current = false
+                WHERE id NOT IN (SELECT id FROM latest_resumes);
+
+            -- Then set the latest one as current
+            UPDATE resumes r
+            SET is_current = true
+            FROM (
+            SELECT DISTINCT ON (user_id) id
             FROM resumes
             ORDER BY user_id, uploaded_at DESC
-            )
-            UPDATE resumes
-            SET is_current = false
-            WHERE id NOT IN (SELECT id FROM latest_resumes);
-
-        -- Then set the latest one as current
-        UPDATE resumes r
-        SET is_current = true
-        FROM (
-        SELECT DISTINCT ON (user_id) id
-        FROM resumes
-        ORDER BY user_id, uploaded_at DESC
-        ) latest
-        WHERE r.id = latest.id;
+            ) latest
+            WHERE r.id = latest.id;
 
   3. Re-upload your resume from the dashboard (click the "Upload Resume" button in the sidebar) to trigger a fresh upload + analysis.
+
+---
+
+### Session Conclusion - January 10, 2026
+
+## Project Complete: Resume AI Platform
+
+All 6 stages of the Resume AI Platform have been successfully implemented and tested on Vercel production.
+
+### Stage Summary
+
+| Stage   | Description                    | Status   |
+| ------- | ------------------------------ | -------- |
+| Stage 1 | User Registration (Clerk Auth) | Complete |
+| Stage 2 | Onboarding Flow                | Complete |
+| Stage 3 | Resume Analysis (Claude AI)    | Complete |
+| Stage 4 | User Dashboard                 | Complete |
+| Stage 5 | Stripe Subscription            | Complete |
+| Stage 6 | UI/Landing Page                | Complete |
+
+### Final Bug Fixes (Jan 10)
+
+| Issue                    | Root Cause                                            | Solution                                                     |
+| ------------------------ | ----------------------------------------------------- | ------------------------------------------------------------ |
+| Webhook 401 Unauthorized | Clerk middleware blocking `/api/stripe/webhook`       | Added route to public routes in `middleware.ts`              |
+| Webhook 500 Invalid Date | Stripe SDK type casting not accessing period dates    | Used `JSON.parse(JSON.stringify())` to get plain object      |
+| Subscription not saving  | Missing UNIQUE constraint on `subscriptions.user_id`  | Added constraint via SQL                                     |
+| PDF parse 422 on Vercel  | `pdf-parse` module not bundled for serverless         | Added `serverComponentsExternalPackages` in `next.config.js` |
+| Resume info empty        | Members could have multiple `is_current=true` resumes | Fixed upload to set all previous to `is_current=false`       |
+| Dashboard query fail     | `maybeSingle()` errors with multiple rows             | Changed to `order().limit(1)` query pattern                  |
+
+### Files Modified Today
+
+- `next.config.js` - Added pdf-parse to serverComponentsExternalPackages
+- `lib/resume-parser.ts` - Removed eval('require') hack
+- `app/api/resume/upload/route.ts` - Fixed is_current logic for all user types
+- `app/api/dashboard/data/route.ts` - Made current resume query robust
+
+### Tech Stack Verified Working
+
+- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **Auth**: Clerk (email/password + Google OAuth)
+- **Database**: Supabase (PostgreSQL)
+- **Storage**: Supabase Storage (PDF uploads)
+- **AI**: Claude API (resume analysis)
+- **Payments**: Stripe (subscriptions, webhooks, customer portal)
+- **Deployment**: Vercel (production)
