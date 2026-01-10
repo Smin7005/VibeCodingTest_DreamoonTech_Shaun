@@ -71,13 +71,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 6. If free user, mark previous resume as not current (single storage rule)
-    if (userProfile.user_type === 'free') {
-      await supabaseAdmin
-        .from('resumes')
-        .update({ is_current: false })
-        .eq('user_id', userProfile.id);
-    }
+    // 6. Mark all previous resumes as not current (new upload becomes current)
+    // This applies to both free and member users to ensure only one resume is current
+    await supabaseAdmin
+      .from('resumes')
+      .update({ is_current: false })
+      .eq('user_id', userProfile.id);
 
     // 6. Generate unique filename
     const timestamp = Date.now();

@@ -1000,3 +1000,50 @@ read prompts_10JAN2026.md from line 570 to end."
 
   - Resume upload/analysis will work on
     Vercel
+
+**User:** "Now the subscriptions and subscription_history tables have records of my member account. But now the problem is, after I uploaded resume successfully, resume information and career advice are empty, also at Profile Completion section, Resume Uploaded button is still blue colour which means I still need to upload resume."
+
+**Assistant Reply:**
+
+- I found the bug! When a member uploads a resume, the code doesn't set previous resumes to is_current: false, which can cause multiple resumes to have is_current: true. This breaks the dashboard query.
+
+        Let me fix both the upload route and make the dashboard query more robust.
+        Build successful. I found and fixed two bugs:
+
+        Bug 1: Resume upload for members didn't set previous resumes to is_current=false
+
+        - File: app/api/resume/upload/route.ts - The code only set previous resumes to is_current=false for free users
+        - Now it applies to all users (free and member)
+
+        Bug 2: Dashboard query could fail with multiple current resumes
+
+        - File: app/api/dashboard/data/route.ts
+        - Changed from maybeSingle() (which errors if multiple rows) to order().limit(1) (which gets the most recent)
+
+        What you need to do now:
+
+        1. Deploy to Vercel:
+            git add . && git commit -m "Fix resume upload and dashboard query bugs" && git push
+
+        2. After deployment, you may need to fix existing data in Supabase. Run this SQL in Supabase SQL Editor to ensure only the most recent resume is marked as current for each user:
+            -- Fix: Set all resumes to is_current=false except the most recent one per user
+            WITH latest_resumes AS (
+            SELECT DISTINCT ON (user_id) id, user_id
+            FROM resumes
+            ORDER BY user_id, uploaded_at DESC
+            )
+            UPDATE resumes
+            SET is_current = false
+            WHERE id NOT IN (SELECT id FROM latest_resumes);
+
+        -- Then set the latest one as current
+        UPDATE resumes r
+        SET is_current = true
+        FROM (
+        SELECT DISTINCT ON (user_id) id
+        FROM resumes
+        ORDER BY user_id, uploaded_at DESC
+        ) latest
+        WHERE r.id = latest.id;
+
+  3. Re-upload your resume from the dashboard (click the "Upload Resume" button in the sidebar) to trigger a fresh upload + analysis.

@@ -33,13 +33,14 @@ export async function GET() {
 
     // Fetch all dashboard data in parallel
     const [resumeResult, workExpResult, subscriptionResult, onboardingResult] = await Promise.all([
-      // Get current resume
+      // Get current resume (most recent if multiple exist with is_current=true)
       supabaseAdmin
         .from('resumes')
         .select('*')
         .eq('user_id', userProfile.id)
         .eq('is_current', true)
-        .maybeSingle(),
+        .order('uploaded_at', { ascending: false })
+        .limit(1),
       // Get work experiences
       supabaseAdmin
         .from('work_experiences')
@@ -60,7 +61,8 @@ export async function GET() {
         .order('step_number', { ascending: true }),
     ]);
 
-    const currentResume = resumeResult.data;
+    // Get first resume from array result (we changed from maybeSingle to limit(1))
+    const currentResume = resumeResult.data?.[0] || null;
     const workExperiences = workExpResult.data || [];
     const subscription = subscriptionResult.data;
     const onboardingSteps = onboardingResult.data || [];
