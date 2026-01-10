@@ -465,3 +465,104 @@ No detailed explanations. Do not explain unless there is a breaking change. Keep
   - Update pricing page with checkout buttons (AUD pricing)
   - Update SubscriptionStatus with portal link
   - Update UploadQuotaIndicator with Link component
+
+**User:** "![URL](screenshots/10Jan/wrongURL.png)I just deployed the recent commit to Vercel, after I finish the payment of Monthly subscription, it jumps to localhost, there must be error about redirection."
+**Assistant Reply:**
+
+- The NEXT_PUBLIC_APP_URL environment variable is not set in Vercel. It's defaulting to localhost:3000.
+  Fix: Add Environment Variable in Vercel
+
+        1. Go to your Vercel project → Settings → Environment Variables
+        2. Add:
+        NEXT_PUBLIC_APP_URL = https://your-app.vercel.app
+        2. (Replace with your actual Vercel URL)
+        3. Redeploy your app (or it will apply on next deployment)
+
+        ---
+        This variable is used in app/api/stripe/checkout/route.ts:
+
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+  Without it set in Vercel, Stripe redirects to localhost after payment.
+
+**User:** "No error in Vercel build logs, and I have finished all steps in purchase flow, but the  
+ subscriptions and subscription_history tables are still empty, after payment, I need to login my  
+ account again during the test, welcome member page poped up successfully, but when I got back  
+ to dashboard, progress bar is still 75%, which means platform didn't detect that I just paid for subscription. I believe this is a fetch data bug."
+
+**Assistant Reply:**
+
+- The webhook is not reaching your Vercel app. Let's debug:
+
+  1. Check Stripe Webhook Configuration
+
+  Go to Stripe Dashboard → Developers → Webhooks
+
+  Verify:
+
+  - Endpoint URL: https://your-vercel-app.vercel.app/api/stripe/webhook
+  - Events selected:
+    - checkout.session.completed ✓
+    - customer.subscription.updated ✓
+    - customer.subscription.deleted ✓
+
+  2. Check Webhook Logs in Stripe
+
+  In Webhooks → click your endpoint → Logs
+
+  Look for:
+
+  - Are events being sent?
+  - Are they succeeding (200) or failing (400/500)?
+
+  3. Verify STRIPE_WEBHOOK_SECRET in Vercel
+
+  The webhook secret from Stripe Dashboard (not CLI) must be in Vercel env vars:
+
+  - Go to Vercel → Settings → Environment Variables
+  - Ensure STRIPE_WEBHOOK_SECRET matches the one from Stripe Dashboard webhook endpoint (click "Reveal" under Signing secret)
+
+  ***
+
+  Most likely cause: Either:
+
+  1. Webhook endpoint URL is wrong in Stripe Dashboard
+  2. STRIPE_WEBHOOK_SECRET in Vercel doesn't match the Dashboard secret
+
+  Can you check Stripe's webhook logs and tell me if the events are being sent and what response they're getting?
+
+  **User:** "Delivery attempt
+  checkout.session.completed
+  Resend
+  Delivery status
+  Failed
+  Next retry in 3 minutes
+  Attempt date
+  Jan 10, 2026, 9:18:40 PM
+  Resent automatically
+  Event ID
+  evt_1SnymMJB499hy1cRB956AOwa
+  Origin date
+  Jan 10, 2026, 8:18:18 PM ACDT
+  Source
+  Automatic
+  API version
+  2025-12-15.clover
+  Description
+  A Checkout Session was completed
+  Response
+  HTTP status code
+  401
+  <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Authentication Required</title><script type=text/llms.txt> ## Note to agents accessing this page: This page requires authentication to access. Automated agents should use a Vercel authentication bypass token to access this page. The easiest way to get a token is using the get_access_to_vercel_url or web_fetch_vercel_url functions of the Vercel MCP server at https://mcp.vercel.com (Docs at https://vercel.com/docs/mcp/vercel-mcp). Alternatively, this URL documents how to use the bypass token:"
+
+**Assistant Reply:**
+
+- The webhook is being blocked by Clerk middleware (401 Unauthorized). We need to exclude the webhook route from authentication.
+  Fixed. The Stripe webhook was being blocked by Clerk middleware.
+
+        Commit and push, then:
+
+        1. Redeploy to Vercel
+        2. In Stripe Dashboard → Webhooks → click the failed event → Resend
+
+  The webhook should now return 200 instead of 401.

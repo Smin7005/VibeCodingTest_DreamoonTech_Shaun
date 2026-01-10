@@ -7,7 +7,18 @@ const isProtectedRoute = createRouteMatcher([
   '/subscription(.*)',
 ]);
 
+// Define public API routes that should skip authentication entirely
+const isPublicApiRoute = createRouteMatcher([
+  '/api/stripe/webhook',
+  '/api/user/create-profile', // Clerk webhook
+]);
+
 export default clerkMiddleware(async (auth, req) => {
+  // Skip authentication for public API routes (webhooks)
+  if (isPublicApiRoute(req)) {
+    return;
+  }
+
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
