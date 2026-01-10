@@ -205,7 +205,7 @@ export async function analyzeResume(
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [
         {
           role: 'user',
@@ -213,6 +213,12 @@ export async function analyzeResume(
         }
       ]
     });
+
+    // Check if response was truncated
+    if (message.stop_reason === 'max_tokens') {
+      console.warn('⚠️ Claude response was truncated due to max_tokens limit');
+      throw new Error('Analysis response was too long. Please try again.');
+    }
 
     // Extract text content from response
     const responseContent = message.content[0];
