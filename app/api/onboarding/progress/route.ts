@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import {
   getOnboardingProgress,
@@ -14,6 +14,91 @@ export const dynamic = 'force-dynamic';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SECRET_KEY!;
 const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+
+/**
+ * Helper function to get or create user profile
+ * Handles race condition where user lands on onboarding before webhook creates profile
+ */
+async function getOrCreateUserProfile(clerkUserId: string) {
+  // First try to get existing profile
+  const { data: existingProfile, error: fetchError } = await supabaseAdmin
+    .from('user_profiles')
+    .select('id, user_type')
+    .eq('clerk_user_id', clerkUserId)
+    .maybeSingle();
+
+  if (existingProfile) {
+    return existingProfile;
+  }
+
+  // Profile doesn't exist - create it (webhook hasn't fired yet)
+  console.log('Profile not found, creating for clerk user:', clerkUserId);
+
+  // Get user details from Clerk
+  const user = await currentUser();
+  if (!user) {
+    throw new Error('Could not get current user from Clerk');
+  }
+
+  const email = user.emailAddresses[0]?.emailAddress || '';
+  const name = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
+
+  // Create user profile
+  const { data: newProfile, error: createError } = await supabaseAdmin
+    .from('user_profiles')
+    .insert({
+      clerk_user_id: clerkUserId,
+      email: email,
+      name: name,
+      user_type: 'guest',
+      profile_completion: 0,
+    })
+    .select('id, user_type')
+    .single();
+
+  if (createError) {
+    // Check if it was created by webhook in the meantime (race condition)
+    if (createError.code === '23505') { // unique_violation
+      const { data: retryProfile } = await supabaseAdmin
+        .from('user_profiles')
+        .select('id, user_type')
+        .eq('clerk_user_id', clerkUserId)
+        .single();
+
+      if (retryProfile) {
+        return retryProfile;
+      }
+    }
+    console.error('Error creating user profile:', createError);
+    throw new Error('Failed to create user profile');
+  }
+
+  console.log('Created user profile:', newProfile.id);
+
+  // Initialize onboarding progress
+  const guestSteps = [
+    { step_number: 1, step_name: 'sign-up', completed: true },
+    { step_number: 2, step_name: 'basic-information', completed: false },
+    { step_number: 3, step_name: 'resume-upload', completed: false },
+    { step_number: 4, step_name: 'analysis-results', completed: false },
+  ];
+
+  await supabaseAdmin
+    .from('onboarding_progress')
+    .insert(
+      guestSteps.map(step => ({
+        user_id: newProfile.id,
+        step_number: step.step_number,
+        step_name: step.step_name,
+        completed: step.completed,
+        completed_at: step.completed ? new Date().toISOString() : null,
+      }))
+    );
+
+  console.log('Initialized onboarding progress for user:', newProfile.id);
+
+  return newProfile;
+}
 
 /**
  * GET /api/onboarding/progress
@@ -38,19 +123,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get user profile to check user_type
-    const { data: profile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('id, user_type')
-      .eq('clerk_user_id', userId)
-      .single();
-
-    if (profileError || !profile) {
-      return NextResponse.json(
-        { error: 'User profile not found' },
-        { status: 404 }
-      );
-    }
+    // Get or create user profile (handles race condition with webhook)
+    const profile = await getOrCreateUserProfile(userId);
 
     // Get onboarding progress
     const steps = await getOnboardingProgress(profile.id);
@@ -113,24 +187,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get user profile
-    const { data: profile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('id, user_type')
-      .eq('clerk_user_id', userId)
-      .single();
+    // Get or create user profile (handles race condition with webhook)
+    const profile = await getOrCreateUserProfile(userId);
 
-    if (profileError || !profile) {
-      return NextResponse.json(
-        { error: 'User profile not found' },
-        { status: 404 }
-      );
-    }
-
-    // Check if progress exists
+    // Check if progress exists (getOrCreateUserProfile already creates it for new users)
     const existingProgress = await getOnboardingProgress(profile.id);
 
-    // If no progress exists, initialize it
+    // If no progress exists (shouldn't happen, but just in case), initialize it
     if (!existingProgress || existingProgress.length === 0) {
       console.log('Initializing onboarding progress for user:', profile.id);
       const guestSteps = [
