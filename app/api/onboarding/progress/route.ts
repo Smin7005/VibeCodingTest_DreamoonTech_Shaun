@@ -7,6 +7,9 @@ import {
   getCurrentStep,
 } from '@/lib/onboarding';
 
+// Force dynamic rendering - this route uses auth headers
+export const dynamic = 'force-dynamic';
+
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SECRET_KEY!;
