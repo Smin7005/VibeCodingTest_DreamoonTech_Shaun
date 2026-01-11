@@ -147,12 +147,45 @@ export default function OnboardingPage() {
 
   // Step 2: Basic Information Form
   const handleBasicInfoSubmit = async (data: any) => {
+    // Save basic info to database
+    const response = await fetch('/api/dashboard/basic-info', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to save basic info');
+    }
+
     setBasicInfo(data);
     // Don't complete step yet - wait for work experience
   };
 
   // Step 2 (continued): Work Experience Form
   const handleWorkExperienceSubmit = async (experiences: WorkExperience[]) => {
+    // Convert form data to API format and save to database
+    const updates = experiences.map(exp => ({
+      company_name: exp.company_name,
+      job_title: exp.job_title,
+      start_date: `${exp.start_year}-${exp.start_month}-01`,
+      end_date: exp.is_current ? null : (exp.end_year && exp.end_month ? `${exp.end_year}-${exp.end_month}-01` : null),
+      is_current: exp.is_current,
+      isNew: true, // All are new during onboarding
+    }));
+
+    const response = await fetch('/api/dashboard/work-experience', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ updates }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to save work experiences');
+    }
+
     setWorkExperiences(experiences);
     // Complete step 2 after both basic info and work experience are done
     await completeStep(2, 'basic-information');

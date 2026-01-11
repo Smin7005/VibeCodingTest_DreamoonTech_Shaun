@@ -3,6 +3,9 @@ import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { setCurrentResume, deleteResumeVersion, updateResumeLabel } from '@/lib/dashboard';
 
+// Force dynamic rendering - this route uses auth headers
+export const dynamic = 'force-dynamic';
+
 // PATCH - Update resume (set current, rename)
 export async function PATCH(req: NextRequest) {
   try {

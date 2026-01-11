@@ -3,6 +3,9 @@ import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { checkUploadQuota, incrementUploadQuota } from '@/lib/quota';
 
+// Force dynamic rendering - this route uses auth headers
+export const dynamic = 'force-dynamic';
+
 // Server-side file validation
 function validateFile(file: File): { valid: boolean; error?: string } {
   if (file.type !== 'application/pdf') {

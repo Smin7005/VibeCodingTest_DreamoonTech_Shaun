@@ -4,6 +4,9 @@ import { supabaseAdmin, WorkExperience } from '@/lib/supabase';
 import { extractTextFromResume } from '@/lib/resume-parser';
 import { analyzeResume, detectDateDiscrepancies } from '@/lib/claude';
 
+// Force dynamic rendering - this route uses auth headers
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Authenticate user

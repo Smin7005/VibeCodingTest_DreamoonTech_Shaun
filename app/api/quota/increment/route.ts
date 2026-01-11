@@ -3,6 +3,9 @@ import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { incrementUploadQuota } from '@/lib/quota';
 
+// Force dynamic rendering - this route uses auth headers
+export const dynamic = 'force-dynamic';
+
 // This endpoint is called internally after successful resume upload
 export async function POST(req: NextRequest) {
   try {
