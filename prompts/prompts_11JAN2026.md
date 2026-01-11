@@ -131,3 +131,33 @@ Then redeploy to Vercel and test the sign-up flow again.
         Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>" && git push
 
         Then redeploy to Vercel and test the full sign-up → onboarding → dashboard flow.
+
+# 4. Now there is 1 bug left, as free user, after finishing the sign-up onboarding flow, the upload quota should be 1 out of 5, not 0 out of 5.
+
+**Reply:**
+
+- Build passed.
+
+        Bug Fixed: Upload quota showing 0/5 instead of 1/5
+
+        Root Cause:
+        During onboarding, the user's user_type is 'guest'. The quota check and increment logic only ran for 'free' users. So when a guest uploads a resume during onboarding, the quota wasn't tracked.
+
+        Fix Applied:
+        Updated app/api/resume/upload/route.ts:
+
+        - Line 59: Quota check now includes guest users
+        - Line 126: Quota increment now includes guest users
+
+        // Before
+        if (userProfile.user_type === 'free') {
+
+        // After
+        if (userProfile.user_type === 'free' || userProfile.user_type === 'guest') {
+
+        Next Steps:
+        git add . && git commit -m "Fix: Track upload quota for guest users during onboarding
+
+        Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>" && git push
+
+  Then redeploy to Vercel. After the fix, when a guest user uploads a resume during onboarding and becomes a free user, their dashboard will correctly show "1 out of 5" uploads used.

@@ -54,8 +54,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
     }
 
-    // 5. Check quota for free users before upload
-    if (userProfile.user_type === 'free') {
+    // 5. Check quota for free and guest users before upload
+    // Guest users are subject to the same limits as free users
+    if (userProfile.user_type === 'free' || userProfile.user_type === 'guest') {
       const quotaStatus = await checkUploadQuota(userProfile.id, 'free');
       if (!quotaStatus.canUpload) {
         console.log(`❌ Upload quota exceeded for user ${userProfile.id}. Used: ${quotaStatus.used}/${quotaStatus.limit}`);
@@ -121,8 +122,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to save resume record' }, { status: 500 });
     }
 
-    // 9. Increment quota for free users after successful upload
-    if (userProfile.user_type === 'free') {
+    // 9. Increment quota for free and guest users after successful upload
+    // Guest users will become free users after onboarding, so we track their quota too
+    if (userProfile.user_type === 'free' || userProfile.user_type === 'guest') {
       const quotaResult = await incrementUploadQuota(userProfile.id);
       console.log(`✅ Quota incremented for user ${userProfile.id}. New count: ${quotaResult.newCount}`);
     }
